@@ -1,9 +1,9 @@
 from collections import defaultdict
 
 
-class Entity:
-    def __init__(self, _id, entity_has_reference):
-        self._id = _id
+class Entity(object):
+    def __init__(self, id_, entity_has_reference):
+        self.id_ = id_
         self.entity_has_reference = entity_has_reference
 
     def has(self, *component_types):
@@ -11,21 +11,21 @@ class Entity:
 
     @property
     def id(self):
-        return self._id
+        return self.id_
 
 
-class Component:
-    def __init__(self, _id, requires=[]):
-        self._id = _id
+class Component(object):
+    def __init__(self, id_, requires=[]):
+        self.id_ = id_
         self.parent_entity = 0
         self.requires = requires
 
     @property
     def id(self):
-        return self._id
+        return self.id_
 
 
-class Galena:
+class Galena(object):
     def __init__(self):
         self.uid = 0
 
@@ -39,16 +39,17 @@ class Galena:
         self.entities[entity.id] = entity
         return entity
 
-    def remove_entity(self, entity):
+    def remove_entity(self, id_):
         try:
-            del self.entities[entity.id]
+            del self.entities[id_]
+            return True
         except KeyError:
             raise KeyError('''Could not remove requested entity. Entity not
                            found.''')
 
-    def get_entity(self, _id):
+    def get_entity(self, id_):
         try:
-            return self.entities[_id]
+            return self.entities[id_]
         except KeyError:
             raise KeyError('Could not find requested entity.')
 
@@ -57,10 +58,10 @@ class Galena:
             for component in self.components_of_type(component_type):
                 yield self.entities[component.parent_entity]
 
-    def entity_has(self, _id, *component_types):
+    def entity_has(self, id_, *component_types):
         for component_type in component_types:
             for component in self.components_of_type(component_type):
-                if component.parent_entity == _id:
+                if component.parent_entity == id_:
                     break
             else:
                 return False
@@ -70,7 +71,7 @@ class Galena:
     def add_component(self, entity, component):
         if not entity.has(*component.requires):
             raise NotImplementedError('''Cannot add component. The entity does
-                                      not implement the components {0}
+                                      not implement the component {0}
                                       required by {1}'''.format(
                                       component.requires, type(component)))
 
