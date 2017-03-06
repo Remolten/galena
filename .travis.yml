@@ -11,7 +11,7 @@ cache:
 
 install:
   - "pip install flake8 --cache-dir $HOME/.pip-cache"
-  - "pip install coverage  --download-cache $HOME/.pip-cache"
+  - "pip install coverage  --cache-dir $HOME/.pip-cache"
 
 before_script:
   - "flake8 galena.py tests"
