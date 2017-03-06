@@ -24,7 +24,7 @@ class TestEntity(unittest.TestCase):
 
         with self.assertRaises(KeyError):
             test_entity_dne = galena.Entity(test_galena.uid + 1,
-                                             test_galena.entity_has)
+                                            test_galena.entity_has)
             test_galena.get_entity(test_entity_dne.id)
 
         self.assertEqual(test_entity, test_galena.get_entity(test_entity.id))
@@ -42,7 +42,7 @@ class TestEntity(unittest.TestCase):
 
 class TestComponent(galena.Component):
     def __init__(self):
-        pass
+        super.__init__()
 
 
 class TestComponents(unittest.TestCase):

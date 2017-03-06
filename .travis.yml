@@ -5,5 +5,15 @@ sudo: false
 python:
   - "3.6"
 
+cache:
+  directories:
+    - "$HOME/.pip-cache/"
+
+install:
+  - "pip install flake8 --download-cache $HOME/.pip-cache"
+
+before_script:
+  - "flake8 galena.py tests"
+
 script:
   - "python -m unittest discover"
