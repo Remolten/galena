@@ -1,10 +1,9 @@
 import unittest
 
 try:
-    import galena
-except ImportError:
     from .. import galena
-
+except ImportError:
+    import galena
 
 class TestEntity(unittest.TestCase):
     def get_test_galena(self):
@@ -43,7 +42,13 @@ class TestEntity(unittest.TestCase):
         self.assertTrue(test_galena.remove_entity(test_entity.id))
         self.assertFalse(test_galena.entities.get(test_entity.id, False))
 
+class TestComponent(galena.Component):
+    def __init__(self):
+        pass
 
 class TestComponents(unittest.TestCase):
+    def get_test_component(self):
+        return object()
+
     def test_stuff(self):
         pass
