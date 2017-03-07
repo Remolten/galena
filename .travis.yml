@@ -11,7 +11,8 @@ cache:
 
 install:
   - "pip install flake8 --cache-dir $HOME/.pip-cache"
-  - "pip install coverage  --cache-dir $HOME/.pip-cache"
+  - "pip install coverage --cache-dir $HOME/.pip-cache"
+  - "pip install coveralls --cache-dir $HOME/.pip-cache"
 
 before_script:
   - "flake8 galena.py tests"
@@ -20,4 +21,4 @@ script:
   - "coverage run -m unittest discover"
 
 after_success:
-  - "coverage report"
+  - "coveralls"
