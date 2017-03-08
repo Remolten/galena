@@ -6,41 +6,25 @@ class TestEntity(unittest.TestCase):
     def get_test_galena(self):
         return galena.Galena()
 
-    def get_test_entity(self, test_galena):
-        return test_galena.create_entity()
-
     def test_create_entity(self):
         test_galena = self.get_test_galena()
-        test_entity = self.get_test_entity(test_galena)
+        test_entity = test_galena.create_entity()
 
-        self.assertIsInstance(test_entity, galena.Entity)
-        self.assertEqual(test_galena.entities[test_entity.id],
-                         test_entity)
-        self.assertEqual(test_entity.id, test_galena.uid)
-
-    def test_get_entity(self):
-        test_galena = self.get_test_galena()
-        test_entity = self.get_test_entity(test_galena)
-
-        with self.assertRaises(KeyError):
-            test_entity_dne = galena.Entity(test_galena.uid + 1,
-                                            test_galena.entity_has)
-            test_galena.get_entity(test_entity_dne.id)
-
-        self.assertEqual(test_entity, test_galena.get_entity(test_entity.id))
+        self.assertEqual(test_entity, test_galena.uid)
 
     def test_remove_entity(self):
         test_galena = self.get_test_galena()
-        test_entity = self.get_test_entity(test_galena)
+        test_entity = test_galena.create_entity()
 
         with self.assertRaises(KeyError):
             test_galena.remove_entity(test_galena.uid + 1)
 
-        self.assertTrue(test_galena.remove_entity(test_entity.id))
-        self.assertFalse(test_galena.entities.get(test_entity.id, False))
+        test_galena.remove_entity(test_entity)
 
+        # Could replace this with an entity_exists function call
+        self.assertFalse(test_entity in test_galena.entities)
 
-class TestComponent(galena.Component):
+'''class TestComponent(galena.Component):
     def __init__(self):
         super.__init__()
 
@@ -50,4 +34,4 @@ class TestComponents(unittest.TestCase):
         return object()
 
     def test_stuff(self):
-        pass
+        pass'''
