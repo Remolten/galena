@@ -2,7 +2,7 @@ from collections import defaultdict
 
 
 class Component(object):
-    def __init__(self, id_, requires=[]):
+    def __init__(self, id_, requires=()):
         self.id_ = id_
         self.parent_entity = 0
         self.requires = requires
@@ -25,6 +25,12 @@ class Galena(object):
 
         return self.uid
 
+    def entity_exists(self, entity):
+        if entity in self.entities:
+            return True
+
+        return False
+
     def remove_entity(self, entity):
         try:
             # This should delete component references and add them to the
@@ -32,9 +38,6 @@ class Galena(object):
             del self.entities[entity]
         except KeyError:
             raise KeyError('Could not remove requested entity. Entity not found.')  # noqa: E501
-
-    # def entity_exists ???
-    # TODO Add an entity exists function
 
     # FIXME This needs to be renamed, and component_types should just be a list
     def entity_has(self, entity, *component_types):
