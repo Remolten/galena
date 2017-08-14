@@ -12,13 +12,14 @@ cache:
 install:
   - "pip install flake8 --cache-dir $HOME/.pip-cache"
   - "pip install coverage --cache-dir $HOME/.pip-cache"
+  - "pip install pytest-cov --cache-dir $HOME/.pip-cache"
   - "pip install coveralls --cache-dir $HOME/.pip-cache"
 
 before_script:
-  - "flake8 galena.py tests"
+  - "flake8 --max-line-length=80"
 
 script:
-  - "coverage run -m unittest discover"
+  - "pytest --cov=pwd"
 
 after_success:
   - "coveralls"

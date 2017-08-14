@@ -1,44 +1,79 @@
-import unittest
-import galena
+import pytest
+
+from ..src import galena
 
 
-class TestEntity(unittest.TestCase):
-    def get_test_galena(self):
-        return galena.Galena()
+class Health(galena.Component):
+    health = 1
 
-    def test_create_entity(self):
-        test_galena = self.get_test_galena()
+
+class Velocity(galena.Component):
+    required_components = (Health,)
+
+    speed = 10
+    direction = 180
+
+
+class TestEntity:
+    @staticmethod
+    def test_create_entity():
+        test_galena = galena.Galena()
         test_entity = test_galena.create_entity()
 
-        self.assertEqual(test_entity, test_galena.uid)
+        assert test_entity == test_galena._uid
 
-    def test_entity_exists(self):
-        test_galena = self.get_test_galena()
+    @staticmethod
+    def test_entity_exists():
+        test_galena = galena.Galena()
         test_entity = test_galena.create_entity()
 
-        self.assertTrue(test_galena.entity_exists(test_entity))
-        self.assertFalse(test_galena.entity_exists(test_galena.uid + 1))
+        assert test_galena.entity_exists(test_entity)
+        assert not test_galena.entity_exists(test_galena._uid + 1)
 
-    def test_remove_entity(self):
-        test_galena = self.get_test_galena()
+    @staticmethod
+    def test_remove_entity():
+        test_galena = galena.Galena()
         test_entity = test_galena.create_entity()
 
-        test_galena.remove_entity(test_entity)
+        assert test_galena.remove_entity(test_entity)
+        assert not test_galena.entity_exists(test_entity)
+        assert not test_galena.remove_entity(test_galena._uid + 1)
 
-        self.assertFalse(test_galena.entity_exists(test_entity))
+    @staticmethod
+    def test_entity_has():
+        test_galena = galena.Galena()
+        test_entity = test_galena.create_entity()
 
-        with self.assertRaises(KeyError):
-            test_galena.remove_entity(test_galena.uid + 1)
+        assert not test_galena.entity_has(test_entity, (Health,))
+        assert not test_galena.entity_has(test_entity, (Health, Velocity))
+
+        test_galena.add_component_to_entity(Health(), test_entity)
+        assert test_galena.entity_has(test_entity, (Health,))
+
+        test_galena.add_component_to_entity(Velocity(), test_entity)
+        assert test_galena.entity_has(test_entity, (Health, Velocity))
+
+    @staticmethod
+    def test_entities_with():
+        pass
 
 
-'''class TestComponent(galena.Component):
-    def __init__(self):
-        super.__init__()
+class TestComponents:
+    @staticmethod
+    def test_add_component_to_entity():
+        test_galena = galena.Galena()
+        test_entity = test_galena.create_entity()
 
+        test_health_component = Health()
+        test_velocity_component = Velocity()
 
-class TestComponents(unittest.TestCase):
-    def get_test_component(self):
-        return object()
+        assert test_velocity_component not in test_galena._components[Velocity]
 
-    def test_stuff(self):
-        pass'''
+        with pytest.raises(TypeError):
+            test_galena.add_component_to_entity(test_velocity_component, test_entity)  # noqa: E501
+
+        test_galena.add_component_to_entity(test_health_component, test_entity)
+        assert test_health_component in test_galena._components[Health]
+
+        test_galena.add_component_to_entity(test_velocity_component, test_entity)  # noqa: E501
+        assert test_velocity_component in test_galena._components[Velocity]
