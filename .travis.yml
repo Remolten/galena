@@ -19,7 +19,7 @@ before_script:
   - "flake8 --max-line-length=80"
 
 script:
-  - "pytest --cov=$(pwd)"
+  - "pytest --cov=$(pwd) tests"
 
 after_success:
   - "coveralls"
