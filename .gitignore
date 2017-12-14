@@ -1,2 +1,11 @@
-# TODO Add the necessary things here
+# Code coverage reports
 .coverage
+.cache/
+
+# Python fragments
+__pycache__/
+*.py[cod]
+
+# PyCharm
+.idea/
+
