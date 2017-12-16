@@ -1,6 +1,6 @@
 import pytest
 
-from ..src import galena
+from ..galena import galena
 
 
 class Health(galena.Component):
