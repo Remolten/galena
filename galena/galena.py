@@ -35,13 +35,12 @@ class Game:
         return self._uid
 
     def remove_entity(self, entity):
-        if entity in self._entities:
-            # TODO Delete component references and add them to the component
-            # pool
+        try:
             del self._entities[entity]
-            return True
+        except KeyError:
+            raise
 
-        return False
+        return True
 
     def entity_has(self, entity, *component_types):
         entity_component_types = (component for component in

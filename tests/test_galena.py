@@ -45,7 +45,9 @@ class TestEntity:
     def test_remove_entity(game, entity):
         assert game.remove_entity(entity)
         assert entity not in game._entities
-        assert not game.remove_entity(game._uid + 1)
+
+        with pytest.raises(KeyError):
+            game.remove_entity(game._uid + 1)
 
     @staticmethod
     def test_entity_has(game, entity):
