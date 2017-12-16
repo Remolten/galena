@@ -31,23 +31,23 @@ class TestGalena:
 
         game.reset()
 
-        assert game._uid == 0
-        assert len(game._entities) == 0
-        assert len(game._components) == 0
+        assert game.uid == 0
+        assert len(game.entities) == 0
+        assert len(game.components) == 0
 
 
 class TestEntity:
     @staticmethod
     def test_create_entity(game, entity):
-        assert entity == game._uid
+        assert entity == game.uid
 
     @staticmethod
     def test_remove_entity(game, entity):
         assert game.remove_entity(entity)
-        assert entity not in game._entities
+        assert entity not in game.entities
 
         with pytest.raises(KeyError):
-            game.remove_entity(game._uid + 1)
+            game.remove_entity(game.uid + 1)
 
     @staticmethod
     def test_entity_has(game, entity):
@@ -79,15 +79,15 @@ class TestComponents:
         with pytest.raises(TypeError):
             game.add_component_to_entity(velocity_component, entity)
         assert not game.entity_has(entity, Velocity)
-        assert velocity_component not in game._components[Velocity]
+        assert velocity_component not in game.components[Velocity]
 
         game.add_component_to_entity(health_component, entity)
         assert game.entity_has(entity, Health)
-        assert health_component in game._components[Health]
+        assert health_component in game.components[Health]
 
         game.add_component_to_entity(velocity_component, entity)
         assert game.entity_has(entity, Velocity)
-        assert velocity_component in game._components[Velocity]
+        assert velocity_component in game.components[Velocity]
 
     @staticmethod
     def test_remove_component_from_entity(game, entity):
@@ -102,11 +102,11 @@ class TestComponents:
 
         game.remove_component_from_entity(Velocity, entity)
         assert not game.entity_has(entity, Velocity)
-        assert velocity_component not in game._components[Velocity]
+        assert velocity_component not in game.components[Velocity]
 
         game.remove_component_from_entity(Health, entity)
         assert not game.entity_has(entity, Health)
-        assert health_component not in game._components[Health]
+        assert health_component not in game.components[Health]
 
     @staticmethod
     def test_get_components_of_type(game, entity):
