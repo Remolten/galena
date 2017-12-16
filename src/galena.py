@@ -14,7 +14,7 @@ class Component(object):
             self.__class__.__dict__[aspect_name] = aspect_value
 
 
-class Galena:
+class Game:
     def __init__(self):
         self._uid = 0
 
@@ -34,14 +34,8 @@ class Galena:
 
         return self._uid
 
-    def entity_exists(self, entity):
-        if entity in self._entities:
-            return True
-
-        return False
-
     def remove_entity(self, entity):
-        if self.entity_exists(entity):
+        if entity in self._entities:
             # TODO Delete component references and add them to the component
             # pool
             del self._entities[entity]
@@ -49,7 +43,7 @@ class Galena:
 
         return False
 
-    def entity_has(self, entity, component_types):
+    def entity_has(self, entity, *component_types):
         entity_component_types = (component for component in
                                   self._entities[entity] if component in
                                   component_types)
@@ -60,17 +54,14 @@ class Galena:
 
         return True
 
-    def entities_with(self, component_types):
+    def entities_with(self, *component_types):
         for component_type in component_types:
-            # TODO It's significantly faster to search the components, but those
-            # functions are not implemented yet
-            for entity in self._entities:
-                if component_type in entity:
-                    yield entity
+            for component in self._components[component_type]:
+                yield component._owning_entity
 
     def add_component_to_entity(self, component, entity):
-        if not self.entity_has(entity, component.required_components):
-            raise TypeError('Cannot add component. The entity does not implement the component {0} required by {1}.'  # noqa: E501
+        if not self.entity_has(entity, *component.required_components):
+            raise TypeError('Cannot add component. The entity does not implement the {0} component, required before adding a {1} component.'  # noqa: E501
                             .format(component.required_components,
                                     type(component)))
 
@@ -79,21 +70,13 @@ class Galena:
         self._entities[entity].append(type(component))
         self._components[type(component)].append(component)
 
-    '''def add_components_to(self, entity, *components):
-        for component in components:
-            self.add_component(entity, component)
+    def remove_component_from_entity(self, component_type, entity):
+        for component in self._components[component_type]:
+            # TODO Should check for requires before deleting
+            if component._owning_entity == entity:
+                self._components[component_type].remove(component)
 
-    def remove_component_from(self, entity, component):
-        for component in self.components_of_type(type(component)):
-            if component.parent_entity == entity.id:
-                del component
+        self._entities[entity].remove(component_type)
 
-    def remove_components_from(self, entity, *components):
-        for component in components:
-            self.remove_component(entity, component)
-
-    def get_components(self, component_type):
-        return self.components_of_type(component_type)
-
-    def components_of_type(self, component_type):
-        return self.components[component_type]'''
+    def get_components_of_type(self, component_type):
+        return self._components[component_type]
