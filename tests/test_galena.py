@@ -57,6 +57,9 @@ class TestEntity:
         game.add_component_to_entity(Health(), entity)
         assert game.entity_has(entity, Health)
 
+        with pytest.raises(TypeError):
+            game.add_component_to_entity(Health(), entity)
+
         game.add_component_to_entity(Velocity(), entity)
         assert game.entity_has(entity, Health, Velocity)
 
@@ -84,10 +87,12 @@ class TestComponents:
         game.add_component_to_entity(health_component, entity)
         assert game.entity_has(entity, Health)
         assert health_component in game.components[Health]
+        assert not health_component.required_by
 
         game.add_component_to_entity(velocity_component, entity)
         assert game.entity_has(entity, Velocity)
         assert velocity_component in game.components[Velocity]
+        assert Velocity in health_component.required_by
 
     @staticmethod
     def test_remove_component_from_entity(game, entity):
@@ -97,8 +102,8 @@ class TestComponents:
         game.add_component_to_entity(health_component, entity)
         game.add_component_to_entity(velocity_component, entity)
 
-        # with pytest.raises(TypeError):
-        #     game.remove_component_from_entity(Health, entity)
+        with pytest.raises(TypeError):
+            game.remove_component_from_entity(Health, entity)
 
         game.remove_component_from_entity(Velocity, entity)
         assert not game.entity_has(entity, Velocity)

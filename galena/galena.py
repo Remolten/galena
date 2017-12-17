@@ -6,6 +6,8 @@ class Component(object):
     required_components = ()
 
     def __init__(self, **aspects):
+        self.required_by = []
+
         for aspect_name, aspect_value in aspects.items():
             if aspect_name not in self.__class__.__dict__:
                 raise AttributeError('{0} does not contain an attribute named {1}. To fix this error, add an attribute named {1} to the {0} component class.'  # noqa: E501
@@ -59,12 +61,18 @@ class Game:
                 yield component.owning_entity
 
     def add_component_to_entity(self, component, entity):
-        if not self.entity_has(entity, *component.required_components):
-            raise TypeError('Cannot add component. The entity does not implement the {0} component, required before adding a {1} component.'  # noqa: E501
+        if self.entity_has(entity, type(component)):
+            raise TypeError('Cannot add component. The entity already contains a {} component.'  # noqa: E501
+                            .format(type(component)))
+        elif not self.entity_has(entity, *component.required_components):
+            raise TypeError('Cannot add component. The entity does not contain the {} component, required before adding a {} component.'  # noqa: E501
                             .format(component.required_components,
                                     type(component)))
         elif component.required_components:
-            pass
+            for component_type in component.required_components:
+                for dependent_component in self.components[component_type]:
+                    if dependent_component.owning_entity == entity:
+                        dependent_component.required_by.append(type(component))
 
         component.owning_entity = entity
 
@@ -73,8 +81,12 @@ class Game:
 
     def remove_component_from_entity(self, component_type, entity):
         for component in self.components[component_type]:
-            # TODO Should check for requires before deleting
             if component.owning_entity == entity:
+                for required_by_component_type in component.required_by:
+                    if required_by_component_type in self.entities[entity]:
+                        raise TypeError("Cannot remove component. The entity's {} component requires this {} component."  # noqa: E501
+                                        .format(required_by_component_type,
+                                                component_type))
                 self.components[component_type].remove(component)
 
         self.entities[entity].remove(component_type)
