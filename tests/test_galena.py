@@ -115,4 +115,14 @@ class TestComponents:
 
     @staticmethod
     def test_get_components_of_type(game, entity):
-        pass
+        health_component = Health()
+        velocity_component = Velocity()
+
+        game.add_component_to_entity(health_component, entity)
+        game.add_component_to_entity(velocity_component, entity)
+
+        assert health_component in game.get_components_of_type(Health)
+        assert velocity_component not in game.get_components_of_type(Health)
+
+        assert velocity_component in game.get_components_of_type(Velocity)
+        assert health_component not in game.get_components_of_type(Velocity)
