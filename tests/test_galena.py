@@ -86,12 +86,12 @@ class TestComponents:
 
         game.add_component_to_entity(health_component, entity)
         assert game.entity_has(entity, Health)
-        assert health_component in game.components[Health]
+        assert health_component == game.components[Health][entity]
         assert not health_component.required_by
 
         game.add_component_to_entity(velocity_component, entity)
         assert game.entity_has(entity, Velocity)
-        assert velocity_component in game.components[Velocity]
+        assert velocity_component == game.components[Velocity][entity]
         assert Velocity in health_component.required_by
 
     @staticmethod
@@ -121,8 +121,23 @@ class TestComponents:
         game.add_component_to_entity(health_component, entity)
         game.add_component_to_entity(velocity_component, entity)
 
-        assert health_component in game.get_components_of_type(Health)
-        assert velocity_component not in game.get_components_of_type(Health)
+        assert health_component in list(game.get_components_of_type(Health))
+        assert velocity_component not in list(game.get_components_of_type(Health))  # noqa: E501
 
-        assert velocity_component in game.get_components_of_type(Velocity)
-        assert health_component not in game.get_components_of_type(Velocity)
+        assert velocity_component in list(game.get_components_of_type(Velocity))
+        assert health_component not in list(game.get_components_of_type(Velocity))  # noqa: E501
+
+    @staticmethod
+    def test_get_components_for_entity(game, entity):
+        health_component = Health()
+        velocity_component = Velocity()
+
+        game.add_component_to_entity(health_component, entity)
+        game.add_component_to_entity(velocity_component, entity)
+
+        assert health_component in list(game.get_components_for_entity(entity, Health))  # noqa: E501
+        assert velocity_component in list(game.get_components_for_entity(entity, Velocity))  # noqa: E501
+
+        multiple_components = list(game.get_components_for_entity(entity, Health, Velocity))  # noqa: E501
+        assert health_component in multiple_components
+        assert velocity_component in multiple_components

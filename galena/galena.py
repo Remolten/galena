@@ -1,8 +1,8 @@
 from collections import defaultdict
+from functools import partial
 
 
 class Component(object):
-    owning_entity = 0
     required_components = ()
 
     def __init__(self, **aspects):
@@ -21,7 +21,7 @@ class Game:
         self.uid = 0
 
         self.entities = {}
-        self.components = defaultdict(list)
+        self.components = defaultdict(partial(defaultdict, Component))
 
     def reset(self):
         self.uid = 0
@@ -57,8 +57,8 @@ class Game:
 
     def entities_with(self, *component_types):
         for component_type in component_types:
-            for component in self.components[component_type]:
-                yield component.owning_entity
+            for entity in self.components[component_type].keys():
+                yield entity
 
     def add_component_to_entity(self, component, entity):
         if self.entity_has(entity, type(component)):
@@ -70,26 +70,29 @@ class Game:
                                     type(component)))
         elif component.required_components:
             for component_type in component.required_components:
-                for dependent_component in self.components[component_type]:
-                    if dependent_component.owning_entity == entity:
+                for owning_entity, dependent_component in self.components[component_type].items():  # noqa: E501
+                    if owning_entity == entity:
                         dependent_component.required_by.append(type(component))
 
-        component.owning_entity = entity
-
         self.entities[entity].append(type(component))
-        self.components[type(component)].append(component)
+        self.components[type(component)][entity] = component
 
     def remove_component_from_entity(self, component_type, entity):
-        for component in self.components[component_type]:
-            if component.owning_entity == entity:
+        for owning_entity, component in self.components[component_type].copy().items():  # noqa: E501
+            if owning_entity == entity:
                 for required_by_component_type in component.required_by:
                     if required_by_component_type in self.entities[entity]:
                         raise TypeError("Cannot remove component. The entity's {} component requires this {} component."  # noqa: E501
                                         .format(required_by_component_type,
                                                 component_type))
-                self.components[component_type].remove(component)
+                del self.components[component_type][entity]
 
         self.entities[entity].remove(component_type)
 
     def get_components_of_type(self, component_type):
-        return self.components[component_type]
+        for component in self.components[component_type].values():
+            yield component
+
+    def get_components_for_entity(self, entity, *component_types):
+        for component_type in component_types:
+            yield self.components[component_type][entity]
