@@ -5,5 +5,5 @@
 
 Galena is an Entity-Component-System library built for Python, with a focus on simplicity and ease-of-use.
 
-## Usage
+## Installation
 Galena has no external dependencies. Simply copy [galena.py](galena/galena.py) + the [LICENSE](LICENSE) into your project, and drive off into the sunset!
