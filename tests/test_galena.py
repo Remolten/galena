@@ -3,11 +3,13 @@ import pytest
 from ..galena import galena
 
 
-class Health(galena.Component):
+@galena.Component
+class Health:
     health = 1
 
 
-class Velocity(galena.Component):
+@galena.Component
+class Velocity:
     required_components = (Health,)
 
     speed = 10
@@ -43,7 +45,7 @@ class TestEntity:
 
     @staticmethod
     def test_remove_entity(game, entity):
-        assert game.remove_entity(entity)
+        game.remove_entity(entity)
         assert entity not in game.entities
 
         with pytest.raises(KeyError):
@@ -72,8 +74,23 @@ class TestEntity:
         assert entity in list(game.entities_with(Velocity))
 
 
-@pytest.mark.usefixtures('game', 'entity')
 class TestComponents:
+    @staticmethod
+    def test_component_default_arguments():
+        default_health_component = Health()
+        default_velocity_component = Velocity()
+
+        assert default_health_component.health == 1
+        assert default_velocity_component.speed == 10
+        assert default_velocity_component.direction == 180
+
+        not_default_health_component = Health(health=2)
+        not_default_velocity_component = Velocity(speed=20, direction=0)
+
+        assert not_default_health_component.health == 2
+        assert not_default_velocity_component.speed == 20
+        assert not_default_velocity_component.direction == 0
+
     @staticmethod
     def test_add_component_to_entity(game, entity):
         health_component = Health()

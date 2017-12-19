@@ -1,19 +1,20 @@
 from collections import defaultdict
-from functools import partial
 
 
-class Component(object):
-    required_components = ()
+def Component(cls):
+    class WrappedClass:
+        def __init__(self, **kwargs):
+            self.required_components = ()
+            self.required_by = []
 
-    def __init__(self, **aspects):
-        self.required_by = []
+            for attribute_name, attribute_value in cls.__dict__.items():
+                if attribute_name in kwargs:
+                    self.__dict__[attribute_name] = kwargs[attribute_name]
+                elif not attribute_name.startswith('__'):
+                    self.__dict__[attribute_name] = attribute_value
+    WrappedClass.__name__ = cls.__name__
 
-        for aspect_name, aspect_value in aspects.items():
-            if aspect_name not in self.__class__.__dict__:
-                raise AttributeError('{0} does not contain an attribute named {1}. To fix this error, add an attribute named {1} to the {0} component class.'  # noqa: E501
-                                     .format(self.__class__.__name__,
-                                             aspect_name))
-            self.__class__.__dict__[aspect_name] = aspect_value
+    return WrappedClass
 
 
 class Game:
@@ -21,7 +22,7 @@ class Game:
         self.uid = 0
 
         self.entities = {}
-        self.components = defaultdict(partial(defaultdict, Component))
+        self.components = defaultdict(dict)
 
     def reset(self):
         self.uid = 0
@@ -41,8 +42,6 @@ class Game:
             del self.entities[entity]
         except KeyError:
             raise
-
-        return True
 
     def entity_has(self, entity, *component_types):
         entity_component_types = (component for component in
