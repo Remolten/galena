@@ -18,10 +18,10 @@ cache:
     - "$HOME/.pip-cache/"
 
 install:
-  - "pip install flake8 --cache-dir $HOME/.pip-cache"
-  - "pip install coverage --cache-dir $HOME/.pip-cache"
-  - "pip install pytest-cov --cache-dir $HOME/.pip-cache"
-  - "pip install coveralls --cache-dir $HOME/.pip-cache"
+  - "pip install flake8"
+  - "pip install coverage"
+  - "pip install pytest-cov"
+  - "pip install coveralls"
 
 before_script:
   - "flake8 --max-line-length=140"
