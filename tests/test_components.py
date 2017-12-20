@@ -1,6 +1,6 @@
 import pytest
 
-from .component_classes import *
+from .component_classes import Health, Velocity, Shield
 
 
 def test_component_default_arguments():

@@ -1,6 +1,6 @@
 import pytest
 
-from .component_classes import *
+from .component_classes import Health, Velocity, Shield
 
 
 def test_create_entity(game, entity, entity2):

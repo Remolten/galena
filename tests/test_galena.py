@@ -1,4 +1,4 @@
-from .component_classes import *
+from .component_classes import Health, Velocity
 
 
 def test_reset(game, entity, entity2):
