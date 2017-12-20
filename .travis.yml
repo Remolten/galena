@@ -12,8 +12,11 @@ python:
   - 3.6
 
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.6 || $TRAVIS_PYTHON_VERSION == 3.2 || $TRAVIS_PYTHON_VERSION == 3.3 ]]; then pip install flake8==2.6.0;
-  - else pip install flake8; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.6 || $TRAVIS_PYTHON_VERSION == 3.2 || $TRAVIS_PYTHON_VERSION == 3.3 ]]; then
+        pip install flake8==2.6.0;
+    else
+        pip install flake8;
+    fi
   - pip install coverage
   - pip install pytest-cov
   - pip install coveralls
