@@ -96,9 +96,9 @@ class Game(object):
 
     def add_component_to_entity(self, component, entity):
         if self.entity_has(entity, type(component)):
-            raise TypeError('Cannot add component. The entity already contains a {} component.'.format(type(component)))
+            raise TypeError('Cannot add component. The entity already contains a {0} component.'.format(type(component)))
         elif not self.entity_has(entity, *component.required_components):
-            raise TypeError('Cannot add component. The entity does not contain the {} component, required before adding a {} component.'
+            raise TypeError('Cannot add component. The entity does not contain the {0} component, required before adding a {1} component.'
                             .format(component.required_components, type(component)))
         elif component.required_components:
             for component_type in component.required_components:
@@ -116,14 +116,14 @@ class Game(object):
             if owning_entity == entity:
                 for required_by_component_type in component.required_by:
                     if required_by_component_type in self.entities[entity]:
-                        raise TypeError("Cannot remove component. The entity's {} component requires this {} component."
+                        raise TypeError("Cannot remove component. The entity's {0} component requires this {1} component."
                                         .format(required_by_component_type, component_type))
                 del self.components[component_type][entity]
 
         try:
             self.entities[entity].remove(component_type)
         except ValueError:
-            raise ValueError('Cannot remove component. The entity does not contain a {} component'.format(component_type))
+            raise ValueError('Cannot remove component. The entity does not contain a {0} component'.format(component_type))
 
     def get_components_of_type(self, component_type):
         for component in self.components[component_type].values():
