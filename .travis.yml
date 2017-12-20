@@ -27,7 +27,7 @@ before_script:
   - "flake8 --max-line-length=140"
 
 script:
-  - "pytest --cov=."
+  - "py.test --cov=."
 
 after_success:
   - "coveralls"
