@@ -45,12 +45,17 @@ class Game(object):
         {component_type: {entity: component_instance}}
     For example:
         {type(Health): {0: health_instance, 1: other_health_instance}, type(Velocity): {1: velocity_instance}}
+
+    self.systems is a list. It contains system functions that are called by Game.process().
+
+    Each system function must accept one argument, the Game instance.
     """
     def __init__(self):
         self.uid = 0
 
         self.entities = {}
         self.components = defaultdict(dict)
+        self.systems = []
 
     def reset(self):
         self.uid = 0
@@ -129,6 +134,19 @@ class Game(object):
         for component in self.components[component_type].values():
             yield component
 
+    def get_a_component_for_entity(self, entity, component_type):
+        try:
+            return self.components[component_type][entity]
+        except KeyError:
+            return None
+
     def get_components_for_entity(self, entity, *component_types):
         for component_type in component_types:
-            yield self.components[component_type][entity]
+            yield self.get_a_component_for_entity(entity, component_type)
+
+    def add_system(self, system):
+        self.systems.append(system)
+
+    def process(self):
+        for system in self.systems:
+            system(self)

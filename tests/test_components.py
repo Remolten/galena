@@ -192,7 +192,7 @@ def test_get_components_of_type(game, entity, entity2, entity3):
     assert velocity_component3 not in shield_components
 
 
-def test_get_components_for_entity(game, entity, entity2, entity3):
+def test_get_a_component_for_entity(game, entity, entity2, entity3):
     health_component = Health()
     health_component2 = Health()
     health_component3 = Health()
@@ -207,29 +207,29 @@ def test_get_components_for_entity(game, entity, entity2, entity3):
     game.add_component_to_entity(velocity_component3, entity3)
     game.add_component_to_entity(shield_component3, entity3)
 
-    health_component_for_entity = list(game.get_components_for_entity(entity, Health))
-    assert health_component in health_component_for_entity
-    assert health_component2 not in health_component_for_entity
-    assert health_component3 not in health_component_for_entity
-    assert velocity_component not in health_component_for_entity
-    assert velocity_component3 not in health_component_for_entity
-    assert shield_component3 not in health_component_for_entity
+    assert game.get_a_component_for_entity(entity, Shield) is None
+    assert game.get_a_component_for_entity(entity2, Velocity) is None
+    assert game.get_a_component_for_entity(entity3, Health) is not None
 
-    velocity_component_for_entity = list(game.get_components_for_entity(entity, Velocity))
-    assert velocity_component in velocity_component_for_entity
-    assert health_component not in velocity_component_for_entity
-    assert health_component2 not in velocity_component_for_entity
-    assert health_component3 not in velocity_component_for_entity
-    assert velocity_component3 not in velocity_component_for_entity
-    assert shield_component3 not in velocity_component_for_entity
+    assert health_component == game.get_a_component_for_entity(entity, Health)
+    assert velocity_component == game.get_a_component_for_entity(entity, Velocity)
+    assert shield_component3 == game.get_a_component_for_entity(entity3, Shield)
 
-    shield_component_for_entity = list(game.get_components_for_entity(entity3, Shield))
-    assert shield_component3 in shield_component_for_entity
-    assert health_component not in shield_component_for_entity
-    assert health_component2 not in shield_component_for_entity
-    assert health_component3 not in shield_component_for_entity
-    assert velocity_component not in shield_component_for_entity
-    assert velocity_component3 not in shield_component_for_entity
+
+def test_get_components_for_entity(game, entity, entity2, entity3):
+    health_component = Health()
+    health_component2 = Health()
+    health_component3 = Health()
+    velocity_component = Velocity()
+    velocity_component3 = Velocity()
+    shield_component3 = Shield()
+
+    game.add_component_to_entity(health_component, entity)
+    game.add_component_to_entity(velocity_component, entity)
+    game.add_component_to_entity(health_component2, entity2)
+    game.add_component_to_entity(health_component3, entity3)
+    game.add_component_to_entity(velocity_component3, entity3)
+    game.add_component_to_entity(shield_component3, entity3)
 
     multiple_components_for_entity = list(game.get_components_for_entity(entity, Health, Velocity))
     assert health_component in multiple_components_for_entity
