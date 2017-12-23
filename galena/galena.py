@@ -1,3 +1,9 @@
+# Copyright (c) 2016-2017, Remington Thurber
+# All rights reserved.
+#
+# See the BSD 3-clause LICENSE file for more information.
+
+
 from collections import defaultdict
 
 

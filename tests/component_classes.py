@@ -1,4 +1,4 @@
-from ..galena import galena
+import galena
 
 
 @galena.Component

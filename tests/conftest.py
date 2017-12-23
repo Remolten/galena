@@ -1,6 +1,6 @@
 import pytest
 
-from ..galena import galena
+import galena
 
 
 @pytest.fixture

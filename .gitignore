@@ -1,11 +1,10 @@
-# Code coverage reports
-.coverage
-.cache/
+build/
 
-# Python fragments
+.cache/
+.coverage
+
 __pycache__/
 *.py[cod]
 
-# PyCharm
 .idea/
 

@@ -28,6 +28,7 @@ install:
     fi
   - pip install pytest-cov
   - pip install coveralls
+  - python setup.py install
 
 before_script:
   - flake8 --max-line-length=140 galena/galena.py tests/*
