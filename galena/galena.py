@@ -136,7 +136,7 @@ class Game(object):
         except ValueError:
             raise ValueError('Cannot remove component. The entity does not contain a {0} component'.format(component_type))
 
-    def get_components_of_type(self, component_type):
+    def get_components(self, component_type):
         for component in self.components[component_type].values():
             yield component
 
@@ -149,6 +149,11 @@ class Game(object):
     def get_components_for_entity(self, entity, *component_types):
         for component_type in component_types:
             yield self.get_a_component_for_entity(entity, component_type)
+
+    def get_components_by_entity(self, *component_types):
+        for entity in self.entities:
+            if self.entity_has(entity, *component_types):
+                yield tuple(self.get_components_for_entity(entity, *component_types))
 
     def add_system(self, system):
         self.systems.append(system)
